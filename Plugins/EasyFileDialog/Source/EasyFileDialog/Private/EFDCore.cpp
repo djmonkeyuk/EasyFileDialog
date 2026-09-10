@@ -52,6 +52,7 @@ bool EFDCore::FileDialogShared(bool bSave, const void* ParentWindowHandle, const
 
 	// Nicely formatted file types for lookup later and suitable to append to filenames without extensions
 	TArray<FString> CleanExtensionList;
+	FString DefaultExtension;
 
 	// The strings must be in pairs for windows.
 	// It is formatted as follows: Pair1String1|Pair1String2|Pair2String1|Pair2String2
@@ -66,7 +67,14 @@ bool EFDCore::FileDialogShared(bool bSave, const void* ParentWindowHandle, const
 		{
 			// Add to the clean extension list, first removing the * wildcard from the extension
 			int32 WildCardIndex = Extension.Find(TEXT("*"));
-			CleanExtensionList.Add(WildCardIndex != INDEX_NONE ? Extension.RightChop(WildCardIndex + 1) : Extension);
+			FString CleanExtension = WildCardIndex != INDEX_NONE ? Extension.RightChop(WildCardIndex + 1) : Extension;
+			CleanExtension.RemoveFromStart(TEXT("."));
+			CleanExtensionList.Add(CleanExtension);
+
+			if (DefaultExtension.IsEmpty())
+			{
+				DefaultExtension = CleanExtension;
+			}
 		}
 	}
 
@@ -104,7 +112,7 @@ bool EFDCore::FileDialogShared(bool bSave, const void* ParentWindowHandle, const
 	ofn.lpstrTitle = *DialogTitle;
 	if (FileTypesLen > 0)
 	{
-		ofn.lpstrDefExt = &FileTypeStr[0];
+		ofn.lpstrDefExt = *DefaultExtension;
 	}
 
 	ofn.Flags = OFN_HIDEREADONLY | OFN_ENABLESIZING | OFN_EXPLORER;
@@ -184,7 +192,7 @@ bool EFDCore::FileDialogShared(bool bSave, const void* ParentWindowHandle, const
 			if (FPaths::GetExtension(OutFilename).IsEmpty() && !Extension.IsEmpty())
 			{
 				// filename does not have an extension. Add an extension based on the filter that the user chose in the dialog
-				OutFilename += Extension;
+				OutFilename += TEXT(".") + Extension;
 			}
 
 			FPaths::NormalizeFilename(OutFilename);

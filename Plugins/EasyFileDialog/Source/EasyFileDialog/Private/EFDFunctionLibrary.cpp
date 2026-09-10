@@ -14,8 +14,20 @@ bool UEFDFunctionLibrary::OpenFileDialog(const FString& DialogTitle, const FStri
 
 bool UEFDFunctionLibrary::SaveFileDialog(const FString& DialogTitle, const FString& DefaultPath, const FString& DefaultFile, const FString& FileTypeDescription, const FString& FileType, EEasyFileDialogFlags Flags, TArray<FString>& OutFilenames)
 {
-    // Saving the file type and file type description to append and Removing . if user provides any
-    FString TempFileType = FileType.Replace(TEXT("."), TEXT(""));
+    // A complete native filter can be supplied in either Blueprint input.
+    if (FileTypeDescription.Contains(TEXT("|")))
+    {
+        return EFDCore::SaveFileDialogCore(DialogTitle, DefaultPath, DefaultFile, FileTypeDescription, Flags, OutFilenames);
+    }
+
+    if (FileType.Contains(TEXT("|")))
+    {
+        return EFDCore::SaveFileDialogCore(DialogTitle, DefaultPath, DefaultFile, FileType, Flags, OutFilenames);
+    }
+
+    // Normalize a simple extension into the native wildcard form.
+    FString TempFileType = FileType.Replace(TEXT("*"), TEXT(""));
+    TempFileType.RemoveFromStart(TEXT("."));
   
     FString TempFileTypeDescription = FileTypeDescription;  
 
@@ -25,8 +37,7 @@ bool UEFDFunctionLibrary::SaveFileDialog(const FString& DialogTitle, const FStri
         TempFileTypeDescription = TempFileType.ToUpper();
     }
 
-    // Creating final file types by appending FileTypeDescription and FileType
-    const FString FinalFileType = TempFileTypeDescription.Append("|").Append(".").Append(TempFileType);
+    const FString FinalFileType = TempFileTypeDescription.Append("|").Append("*.").Append(TempFileType);
 
     // Calling the core class function for save file dialog
     return EFDCore::SaveFileDialogCore(DialogTitle, DefaultPath, DefaultFile, FinalFileType, Flags, OutFilenames);

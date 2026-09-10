@@ -9,6 +9,7 @@ public class FilePluginProjectEditorTarget : TargetRules
 	{
         
         Type = TargetType.Editor;
+        BuildEnvironment = TargetBuildEnvironment.Unique;
         DefaultBuildSettings = BuildSettingsVersion.V4;
         IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
         ExtraModuleNames.Add("FilePluginProject");
