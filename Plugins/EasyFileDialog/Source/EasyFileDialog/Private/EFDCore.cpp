@@ -23,9 +23,9 @@ bool EFDCore::OpenFolderDialogCore(const FString& DialogTitle, const FString& De
 	return OpenFolderDialogInner(nullptr, DialogTitle, DefaultPath, OutFoldername);
 }
 
-#if !PLATFORM_WINDOWS && !PLATFORM_MAC
-// Platform-specific implementations live in the Windows/ and Mac/ subfolders, which Unreal Build Tool
-// automatically restricts to their matching platform. This fallback covers everything else.
+#if !PLATFORM_WINDOWS && !PLATFORM_MAC && !PLATFORM_LINUX
+// Platform-specific implementations live in the Windows/, Mac/ and Linux/ subfolders, which Unreal
+// Build Tool automatically restricts to their matching platform. This fallback covers everything else.
 bool EFDCore::FileDialogShared(bool bSave, const void* ParentWindowHandle, const FString& DialogTitle, const FString& DefaultPath, const FString& DefaultFile, const FString& FileTypes, uint32 Flags, TArray<FString>& OutFilenames, int32& OutFilterIndex)
 {
 	return false;
