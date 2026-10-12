@@ -49,5 +49,16 @@ public class EasyFileDialog : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
+
+		if (Target.Platform == UnrealTargetPlatform.Mac)
+		{
+			PublicFrameworks.AddRange(
+				new string[]
+				{
+					"Cocoa",
+					"UniformTypeIdentifiers"
+				}
+				);
+		}
 	}
 }

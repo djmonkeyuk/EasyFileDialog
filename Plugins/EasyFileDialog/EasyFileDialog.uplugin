@@ -20,9 +20,6 @@
 			"Name": "EasyFileDialog",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen",
-			"WhitelistPlatforms": [
-				"Win64"
-			]
 		}
 	]
 }
